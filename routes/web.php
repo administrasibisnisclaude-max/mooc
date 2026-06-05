@@ -41,10 +41,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::post('tutors/{user}/reject', [Admin\TutorVerificationController::class, 'reject'])->name('tutors.reject');
 
     // Course Verification
-    Route::get('courses', [Admin\CourseVerificationController::class, 'index'])->name('admin.courses.index');
-    Route::get('courses/{course}', [Admin\CourseVerificationController::class, 'show'])->name('admin.courses.show');
-    Route::post('courses/{course}/approve', [Admin\CourseVerificationController::class, 'approve'])->name('admin.courses.approve');
-    Route::post('courses/{course}/reject', [Admin\CourseVerificationController::class, 'reject'])->name('admin.courses.reject');
+    Route::get('courses', [Admin\CourseVerificationController::class, 'index'])->name('courses.index');
+    Route::get('courses/{course}', [Admin\CourseVerificationController::class, 'show'])->name('courses.show');
+    Route::post('courses/{course}/approve', [Admin\CourseVerificationController::class, 'approve'])->name('courses.approve');
+    Route::post('courses/{course}/reject', [Admin\CourseVerificationController::class, 'reject'])->name('courses.reject');
 
     // Categories
     Route::resource('categories', Admin\CategoryController::class);
