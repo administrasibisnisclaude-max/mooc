@@ -33,10 +33,16 @@ class LessonController extends Controller
         if ($currentKey > 0) $prevLesson = $allLessons[$keys[$currentKey - 1]];
         if ($currentKey < $keys->count() - 1) $nextLesson = $allLessons[$keys[$currentKey + 1]];
 
-        return view('student.lesson', compact('lesson', 'course', 'enrollment', 'progress', 'prevLesson', 'nextLesson'));
+        $completedLessonIds = LessonProgress::where('user_id', $user->id)
+            ->whereNotNull('completed_at')
+            ->whereHas('lesson', fn($q) => $q->whereHas('section', fn($q2) => $q2->where('course_id', $course->id)))
+            ->pluck('lesson_id')
+            ->toArray();
+
+        return view('student.lesson', compact('lesson', 'course', 'enrollment', 'progress', 'prevLesson', 'nextLesson', 'completedLessonIds'));
     }
 
-    public function markComplete(Lesson $lesson)
+    public function markComplete(Lesson $lesson, Request $request)
     {
         $user = Auth::user();
         $course = $lesson->section->course;
@@ -54,12 +60,27 @@ class LessonController extends Controller
             ->whereHas('lesson', fn($q) => $q->whereHas('section', fn($q2) => $q2->where('course_id', $course->id)))
             ->count();
 
-        $progress = $totalLessons > 0 ? ($completedLessons / $totalLessons) * 100 : 0;
+        $pct = $totalLessons > 0 ? ($completedLessons / $totalLessons) * 100 : 0;
         $enrollment = Enrollment::where('user_id', $user->id)->where('course_id', $course->id)->first();
         $enrollment->update([
-            'progress_percentage' => $progress,
-            'completed_at' => $progress >= 100 ? now() : null,
+            'progress_percentage' => $pct,
+            'completed_at' => $pct >= 100 ? now() : null,
         ]);
+
+        if ($request->wantsJson()) {
+            // Determine next lesson URL
+            $allLessons = $course->sections->flatMap->lessons->sortBy(fn($l) => [$l->section->order, $l->order])->values();
+            $currentIdx = $allLessons->search(fn($l) => $l->id === $lesson->id);
+            $nextUrl = ($currentIdx !== false && $currentIdx < $allLessons->count() - 1)
+                ? route('student.lesson', $allLessons[$currentIdx + 1])
+                : null;
+
+            return response()->json([
+                'success' => true,
+                'progress' => round($pct),
+                'next_url' => $nextUrl,
+            ]);
+        }
 
         return back()->with('success', 'Pelajaran ditandai selesai!');
     }
