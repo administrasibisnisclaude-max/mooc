@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Admin;
 use App\Http\Controllers\Tutor;
 use App\Http\Controllers\Student;
+use App\Http\Controllers\Student\CheckoutController;
 
 // Public routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -106,11 +107,22 @@ Route::prefix('tutor')->name('tutor.')->middleware(['auth', 'role:tutor'])->grou
     Route::delete('courses/{course}/announcements/{announcement}', [Tutor\AnnouncementController::class, 'destroy'])->name('announcements.destroy');
 });
 
+// Xendit Webhook (no auth — CSRF excluded in bootstrap/app.php)
+Route::post('/webhooks/xendit', [CheckoutController::class, 'webhook'])->name('webhooks.xendit');
+
 // Student Routes
 Route::middleware(['auth', 'role:student'])->group(function () {
     Route::get('/student/dashboard', [Student\DashboardController::class, 'index'])->name('student.dashboard');
     Route::get('/student/courses', [Student\EnrollmentController::class, 'myCourses'])->name('student.courses');
-    Route::post('/courses/{course}/enroll', [Student\EnrollmentController::class, 'enroll'])->name('student.enroll');
+
+    // Checkout & Payment
+    Route::get('/checkout/{course}',  [CheckoutController::class, 'show'])->name('checkout.show');
+    Route::post('/checkout/{course}', [CheckoutController::class, 'pay'])->name('checkout.pay');
+    Route::get('/payment/success/{orderNumber}', [CheckoutController::class, 'success'])->name('payment.success');
+    Route::get('/payment/failed/{orderNumber}',  [CheckoutController::class, 'failed'])->name('payment.failed');
+
+    // Enrollment (free courses / legacy)
+    Route::post('/courses/{course}/enroll', [CheckoutController::class, 'enroll'])->name('student.enroll');
     Route::get('/learn/{course}', [Student\EnrollmentController::class, 'learn'])->name('student.learn');
 
     // Lessons

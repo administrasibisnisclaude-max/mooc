@@ -173,12 +173,20 @@
                             </div>
                             @endif
                         @elseif(auth()->user()->isStudent())
-                            <form action="{{ route('student.enroll', $course) }}" method="POST">
-                                @csrf
-                                <button type="submit" class="btn btn-primary w-100 py-2">
-                                    <i class="bi bi-person-plus me-2"></i>Daftar Kursus
-                                </button>
-                            </form>
+                            @if($course->price == 0)
+                                {{-- Free: enroll directly --}}
+                                <form action="{{ route('student.enroll', $course) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="btn btn-success w-100 py-2 fw-semibold">
+                                        <i class="bi bi-person-plus me-2"></i>Daftar Gratis
+                                    </button>
+                                </form>
+                            @else
+                                {{-- Paid: go to checkout --}}
+                                <a href="{{ route('checkout.show', $course) }}" class="btn btn-primary w-100 py-2 fw-semibold">
+                                    <i class="bi bi-credit-card me-2"></i>Beli Kursus &mdash; {{ $course->formatted_price }}
+                                </a>
+                            @endif
                         @else
                             <a href="{{ route('courses.index') }}" class="btn btn-outline-primary w-100">Lihat Kursus Lain</a>
                         @endif
