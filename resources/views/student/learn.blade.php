@@ -62,21 +62,38 @@
                 <div class="border-bottom">
                     <div class="px-3 py-2 bg-white fw-semibold small">{{ $section->title }}</div>
                     @foreach($section->lessons as $lesson)
-                    @php $isCompleted = in_array($lesson->id, $completedLessonIds); @endphp
-                    <a href="{{ route('student.lesson', $lesson) }}" class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none border-top {{ $isCompleted ? 'bg-success bg-opacity-5' : '' }}" style="color:inherit;">
-                        <i class="bi {{ $isCompleted ? 'bi-check-circle-fill text-success' : ($lesson->type === 'video' ? 'bi-play-circle text-primary' : 'bi-file-text text-secondary') }}" style="font-size:14px;"></i>
+                    @php
+                        $isCompleted = in_array($lesson->id, $completedLessonIds);
+                        $icon = match($lesson->type) {
+                            'video'    => 'bi-play-circle text-primary',
+                            'quiz'     => 'bi-patch-question text-warning',
+                            'document' => 'bi-file-earmark-text text-secondary',
+                            default    => 'bi-file-text text-secondary',
+                        };
+                    @endphp
+                    <a href="{{ route('student.lesson', $lesson) }}"
+                       class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none border-top {{ $isCompleted ? 'bg-success bg-opacity-5' : '' }}"
+                       style="color:inherit;">
+                        <i class="bi {{ $isCompleted ? 'bi-check-circle-fill text-success' : $icon }}" style="font-size:14px;"></i>
                         <span class="flex-grow-1" style="font-size:13px;">{{ $lesson->title }}</span>
-                        @if($lesson->duration)
-                        <span class="text-muted" style="font-size:11px;">{{ $lesson->formatted_duration }}</span>
+                        @if($isCompleted)
+                            <span class="badge bg-success rounded-pill" style="font-size:10px;">✓</span>
+                        @elseif($lesson->type === 'quiz')
+                            <span class="badge bg-warning text-dark rounded-pill" style="font-size:10px;">Kuis</span>
+                        @elseif($lesson->duration)
+                            <span class="text-muted" style="font-size:11px;">{{ $lesson->formatted_duration }}</span>
                         @endif
                     </a>
                     @endforeach
 
-                    <!-- Quizzes in section -->
-                    @foreach($section->quizzes as $quiz)
-                    <a href="{{ route('student.quiz.start', $quiz) }}" class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none border-top" style="color:inherit;">
+                    <!-- Standalone quizzes (not embedded in lessons) -->
+                    @php $lessonQuizIds = $section->lessons->pluck('quiz_id')->filter()->toArray(); @endphp
+                    @foreach($section->quizzes->whereNotIn('id', $lessonQuizIds) as $quiz)
+                    <a href="{{ route('student.quiz.start', $quiz) }}"
+                       class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none border-top" style="color:inherit;">
                         <i class="bi bi-patch-question text-warning" style="font-size:14px;"></i>
                         <span style="font-size:13px;">Quiz: {{ $quiz->title }}</span>
+                        <span class="badge bg-warning text-dark rounded-pill ms-auto" style="font-size:10px;">Quiz</span>
                     </a>
                     @endforeach
 

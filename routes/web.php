@@ -128,6 +128,7 @@ Route::middleware(['auth', 'role:student'])->group(function () {
     // Lessons
     Route::get('/lessons/{lesson}', [Student\LessonController::class, 'show'])->name('student.lesson');
     Route::post('/lessons/{lesson}/complete', [Student\LessonController::class, 'markComplete'])->name('student.lesson.complete');
+    Route::post('/lessons/{lesson}/quiz-submit', [Student\LessonController::class, 'submitInlineQuiz'])->name('student.lesson.quiz.submit');
 
     // Quizzes
     Route::get('/quizzes/{quiz}/start', [Student\QuizAttemptController::class, 'start'])->name('student.quiz.start');
