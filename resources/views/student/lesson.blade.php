@@ -312,10 +312,23 @@
 
                 {{-- Assignments --}}
                 @foreach($section->assignments as $assignment)
+                @php
+                    $isGraded    = in_array($assignment->id, $gradedAssignmentIds ?? []);
+                    $isSubmitted = in_array($assignment->id, $submittedAssignmentIds ?? []);
+                @endphp
                 <a href="{{ route('student.assignment', $assignment) }}"
-                   class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none border-top" style="color:inherit;">
-                    <i class="bi bi-clipboard2-check text-danger" style="font-size:14px;min-width:16px;"></i>
-                    <span style="font-size:13px;">Tugas: {{ $assignment->title }}</span>
+                   class="d-flex align-items-center gap-2 px-3 py-2 text-decoration-none border-top
+                          {{ $isGraded ? 'bg-success bg-opacity-5' : ($isSubmitted ? 'bg-primary bg-opacity-5' : '') }}"
+                   style="color:inherit;">
+                    <i class="bi {{ $isGraded ? 'bi-check-circle-fill text-success' : 'bi-clipboard2-check' }}
+                              {{ !$isGraded && $isSubmitted ? 'text-primary' : (!$isGraded ? 'text-danger' : '') }}"
+                       style="font-size:14px;min-width:16px;"></i>
+                    <span style="font-size:13px;" class="{{ $isGraded ? 'text-success' : '' }}">Tugas: {{ $assignment->title }}</span>
+                    @if($isGraded)
+                        <span class="badge bg-success rounded-pill ms-auto" style="font-size:10px;">✓ Dinilai</span>
+                    @elseif($isSubmitted)
+                        <span class="badge bg-primary rounded-pill ms-auto" style="font-size:10px;">Dikumpulkan</span>
+                    @endif
                 </a>
                 @endforeach
             </div>

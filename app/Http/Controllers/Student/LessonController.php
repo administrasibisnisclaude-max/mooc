@@ -10,6 +10,7 @@ use App\Models\QuizAttempt;
 use App\Models\QuizAnswer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Student\EnrollmentController;
 
 class LessonController extends Controller
 {
@@ -44,9 +45,13 @@ class LessonController extends Controller
                 ->first()?->load('answers.option', 'answers.question.options');
         }
 
+        $course->load(['sections.assignments', 'sections.quizzes']);
+        [$gradedAssignmentIds, $submittedAssignmentIds] = EnrollmentController::assignmentStatuses($user->id, $course);
+
         return view('student.lesson', compact(
             'lesson', 'course', 'enrollment', 'progress',
-            'prevLesson', 'nextLesson', 'completedLessonIds', 'lastAttempt'
+            'prevLesson', 'nextLesson', 'completedLessonIds', 'lastAttempt',
+            'gradedAssignmentIds', 'submittedAssignmentIds'
         ));
     }
 
