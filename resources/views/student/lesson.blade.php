@@ -100,7 +100,7 @@
             @endif
 
             {{-- ── Quiz Form ──────────────────────────────── --}}
-            @if(!$isCompleted || !$quizResult?['passed'])
+            @if(!$isCompleted || !($quizResult['passed'] ?? false))
             <div class="p-4" id="quiz-form">
                 <form action="{{ route('student.lesson.quiz.submit', $lesson) }}" method="POST" id="inlineQuizForm">
                     @csrf
