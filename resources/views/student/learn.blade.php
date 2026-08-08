@@ -110,7 +110,7 @@
                         <i class="bi {{ $isGraded ? 'bi-check-circle-fill text-success' : 'bi-clipboard2-check' }}
                                   {{ !$isGraded && $isSubmitted ? 'text-primary' : (!$isGraded ? 'text-danger' : '') }}"
                            style="font-size:14px;min-width:16px;"></i>
-                        <span style="font-size:13px;" class="{{ $isGraded ? 'text-success' : '' }}">Tugas: {{ $assignment->title }}</span>
+                        <span style="font-size:13px;">Tugas: {{ $assignment->title }}</span>
                         @if($isGraded)
                             <span class="badge bg-success rounded-pill ms-auto" style="font-size:10px;">✓ Dinilai</span>
                         @elseif($isSubmitted)
