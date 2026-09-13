@@ -50,6 +50,50 @@
                 </a>
                 @endif
             </div>
+
+            {{-- ── Course completed: review prompt ──────────────── --}}
+            @if($enrollment->progress_percentage >= 100)
+            @php
+                $myReview = $course->reviews->firstWhere('user_id', auth()->id());
+            @endphp
+            <div class="card border-0 mt-4 {{ $myReview ? 'bg-warning bg-opacity-10' : 'bg-success bg-opacity-10' }}">
+                <div class="card-body py-3 px-4">
+                    @if($myReview)
+                    <div class="d-flex align-items-center gap-3 flex-wrap">
+                        <div>
+                            <p class="fw-semibold mb-1">
+                                <i class="bi bi-star-fill text-warning me-1"></i>Ulasan Anda
+                            </p>
+                            <div class="d-flex gap-1 mb-1">
+                                @for($i=1;$i<=5;$i++)
+                                <i class="bi {{ $i<=$myReview->rating ? 'bi-star-fill text-warning' : 'bi-star text-muted' }}" style="font-size:14px;"></i>
+                                @endfor
+                                <span class="text-muted small ms-1">{{ $myReview->rating }}/5</span>
+                            </div>
+                            @if($myReview->review)
+                            <p class="mb-0 small text-muted">{{ Str::limit($myReview->review, 100) }}</p>
+                            @endif
+                        </div>
+                        <a href="{{ route('student.review.create', $course) }}" class="btn btn-warning btn-sm ms-auto">
+                            <i class="bi bi-pencil me-1"></i>Edit Ulasan
+                        </a>
+                    </div>
+                    @else
+                    <div class="d-flex align-items-center gap-3 flex-wrap">
+                        <div>
+                            <p class="fw-bold mb-1 text-success">
+                                <i class="bi bi-trophy-fill me-1"></i>Selamat! Kursus Selesai 🎉
+                            </p>
+                            <p class="mb-0 small text-muted">Bagikan pengalaman Anda agar bermanfaat bagi peserta lain.</p>
+                        </div>
+                        <a href="{{ route('student.review.create', $course) }}" class="btn btn-warning fw-semibold ms-auto">
+                            <i class="bi bi-star me-1"></i>Beri Ulasan
+                        </a>
+                    </div>
+                    @endif
+                </div>
+            </div>
+            @endif
         </div>
 
         <!-- Sidebar Curriculum -->

@@ -38,7 +38,7 @@ class EnrollmentController extends Controller
     {
         $user = Auth::user();
         $enrollment = Enrollment::where('user_id', $user->id)->where('course_id', $course->id)->firstOrFail();
-        $course->load(['sections.lessons.materials', 'sections.quizzes', 'sections.assignments', 'announcements.tutor']);
+        $course->load(['sections.lessons.materials', 'sections.quizzes', 'sections.assignments', 'announcements.tutor', 'reviews']);
 
         $completedLessonIds = $user->lessonProgress()
             ->whereNotNull('completed_at')

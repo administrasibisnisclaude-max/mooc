@@ -149,4 +149,9 @@ Route::middleware(['auth', 'role:student'])->group(function () {
     // Certificates
     Route::get('/certificates', [Student\CertificateController::class, 'index'])->name('student.certificates');
     Route::get('/certificates/{certificate}', [Student\CertificateController::class, 'show'])->name('student.certificate.show');
+
+    // Reviews
+    Route::get('/courses/{course}/review', [Student\ReviewController::class, 'create'])->name('student.review.create');
+    Route::post('/courses/{course}/review', [Student\ReviewController::class, 'store'])->name('student.review.store');
+    Route::delete('/courses/{course}/review', [Student\ReviewController::class, 'destroy'])->name('student.review.destroy');
 });

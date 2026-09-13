@@ -125,23 +125,70 @@
             </div>
 
             <!-- Reviews -->
-            @if($course->reviews->count() > 0)
-            <div class="card border-0 shadow-sm">
-                <div class="card-body">
-                    <h4 class="fw-bold mb-3">Ulasan Pelajar</h4>
-                    @foreach($course->reviews->take(5) as $review)
-                    <div class="d-flex gap-3 mb-3">
-                        <img src="https://ui-avatars.com/api/?name={{ urlencode($review->user->name) }}&size=40&background=0056D2&color=fff"
-                            class="rounded-circle" style="width:40px;height:40px;" alt="{{ $review->user->name }}">
-                        <div>
-                            <strong>{{ $review->user->name }}</strong>
-                            <div class="text-warning small mb-1">
-                                @for($i=1; $i<=5; $i++)<i class="bi {{ $i <= $review->rating ? 'bi-star-fill' : 'bi-star' }}"></i>@endfor
+            @php
+                $reviewCount = $course->reviews->count();
+                $avgRating   = round($course->average_rating, 1);
+                $dist = [];
+                for ($s = 5; $s >= 1; $s--) {
+                    $cnt      = $course->reviews->where('rating', $s)->count();
+                    $dist[$s] = ['count' => $cnt, 'pct' => $reviewCount ? round($cnt/$reviewCount*100) : 0];
+                }
+            @endphp
+            @if($reviewCount > 0)
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body p-4">
+                    <h4 class="fw-bold mb-4">Ulasan Pelajar</h4>
+
+                    {{-- Rating summary --}}
+                    <div class="row g-4 mb-4 align-items-center">
+                        <div class="col-auto text-center">
+                            <div class="display-3 fw-bold text-warning lh-1">{{ $avgRating }}</div>
+                            <div class="text-warning my-1">
+                                @for($i=1;$i<=5;$i++)
+                                <i class="bi {{ $i <= round($avgRating) ? 'bi-star-fill' : 'bi-star' }}" style="font-size:13px;"></i>
+                                @endfor
                             </div>
-                            <p class="mb-0 text-muted">{{ $review->review }}</p>
+                            <div class="text-muted small">{{ $reviewCount }} ulasan</div>
+                        </div>
+                        <div class="col">
+                            @for($s=5;$s>=1;$s--)
+                            <div class="d-flex align-items-center gap-2 mb-1">
+                                <span class="text-muted" style="font-size:12px;min-width:8px;">{{ $s }}</span>
+                                <i class="bi bi-star-fill text-warning" style="font-size:11px;"></i>
+                                <div class="progress flex-grow-1" style="height:8px;">
+                                    <div class="progress-bar bg-warning" style="width:{{ $dist[$s]['pct'] }}%"></div>
+                                </div>
+                                <span class="text-muted" style="font-size:12px;min-width:28px;">{{ $dist[$s]['count'] }}</span>
+                            </div>
+                            @endfor
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    {{-- Review list --}}
+                    @foreach($course->reviews->sortByDesc('created_at')->take(6) as $review)
+                    <div class="d-flex gap-3 mb-4">
+                        <img src="https://ui-avatars.com/api/?name={{ urlencode($review->user->name) }}&size=42&background=0056D2&color=fff"
+                             class="rounded-circle flex-shrink-0" style="width:42px;height:42px;" alt="{{ $review->user->name }}">
+                        <div class="flex-grow-1">
+                            <div class="d-flex align-items-center gap-2 flex-wrap">
+                                <strong class="small">{{ $review->user->name }}</strong>
+                                <div class="text-warning" style="font-size:12px;">
+                                    @for($i=1;$i<=5;$i++)<i class="bi {{ $i<=$review->rating ? 'bi-star-fill' : 'bi-star' }}"></i>@endfor
+                                </div>
+                                <span class="text-muted" style="font-size:11px;">{{ $review->created_at->diffForHumans() }}</span>
+                            </div>
+                            @if($review->review)
+                            <p class="mb-0 mt-1 small">{{ $review->review }}</p>
+                            @endif
                         </div>
                     </div>
                     @endforeach
+
+                    @if($reviewCount > 6)
+                    <p class="text-muted small text-center mb-0">+{{ $reviewCount - 6 }} ulasan lainnya</p>
+                    @endif
                 </div>
             </div>
             @endif
