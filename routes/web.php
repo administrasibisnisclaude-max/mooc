@@ -154,4 +154,12 @@ Route::middleware(['auth', 'role:student'])->group(function () {
     Route::get('/courses/{course}/review', [Student\ReviewController::class, 'create'])->name('student.review.create');
     Route::post('/courses/{course}/review', [Student\ReviewController::class, 'store'])->name('student.review.store');
     Route::delete('/courses/{course}/review', [Student\ReviewController::class, 'destroy'])->name('student.review.destroy');
+
+    // Mini Games
+    Route::get('/games', [Student\GameController::class, 'index'])->name('student.games.index');
+    Route::get('/games/leaderboard', [Student\GameController::class, 'leaderboard'])->name('student.games.leaderboard');
+    Route::get('/games/{challenge}', [Student\GameController::class, 'show'])->name('student.games.show');
+    Route::get('/games/{challenge}/play', [Student\GameController::class, 'play'])->name('student.games.play');
+    Route::post('/games/{challenge}/check', [Student\GameController::class, 'checkAnswer'])->name('student.games.check');
+    Route::post('/games/{challenge}/save', [Student\GameController::class, 'saveAttempt'])->name('student.games.save');
 });
