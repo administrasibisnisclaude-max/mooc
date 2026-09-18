@@ -63,6 +63,7 @@
                                 <li><a class="dropdown-item" href="{{ route('dashboard') }}"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
                                 @if(auth()->user()->isStudent())
                                     <li><a class="dropdown-item" href="{{ route('student.courses') }}"><i class="bi bi-book me-2"></i>Kursus Saya</a></li>
+                                    <li><a class="dropdown-item" href="{{ route('student.games.index') }}"><i class="bi bi-controller me-2"></i>Mini Games</a></li>
                                     <li><a class="dropdown-item" href="{{ route('student.certificates') }}"><i class="bi bi-award me-2"></i>Sertifikat</a></li>
                                 @endif
                                 <li><hr class="dropdown-divider"></li>

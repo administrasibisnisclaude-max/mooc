@@ -75,6 +75,9 @@
 
     <div class="mt-4 text-center">
         <a href="{{ route('courses.index') }}" class="btn btn-outline-primary">Temukan Kursus Baru</a>
+        <a href="{{ route('student.games.index') }}" class="btn btn-outline-warning ms-2">
+            <i class="bi bi-controller me-1"></i>Mini Games
+        </a>
         <a href="{{ route('student.certificates') }}" class="btn btn-outline-success ms-2">
             <i class="bi bi-award me-1"></i>Sertifikat Saya
         </a>
