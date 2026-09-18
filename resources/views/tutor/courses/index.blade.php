@@ -28,6 +28,7 @@
                     <a href="{{ route('tutor.courses.edit', $course) }}" class="btn btn-outline-secondary btn-sm">Edit</a>
                     <a href="{{ route('tutor.quizzes.index', $course) }}" class="btn btn-outline-info btn-sm">Quiz</a>
                     <a href="{{ route('tutor.assignments.index', $course) }}" class="btn btn-outline-warning btn-sm">Tugas</a>
+                    <a href="{{ route('tutor.challenges.index', $course) }}" class="btn btn-outline-success btn-sm"><i class="bi bi-controller me-1"></i>Challenges</a>
                     @if($course->status === 'draft')
                     <form action="{{ route('tutor.courses.submit', $course) }}" method="POST" class="d-inline">
                         @csrf
