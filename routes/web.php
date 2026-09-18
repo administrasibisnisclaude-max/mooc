@@ -105,6 +105,14 @@ Route::prefix('tutor')->name('tutor.')->middleware(['auth', 'role:tutor'])->grou
     Route::get('courses/{course}/announcements', [Tutor\AnnouncementController::class, 'index'])->name('announcements.index');
     Route::post('courses/{course}/announcements', [Tutor\AnnouncementController::class, 'store'])->name('announcements.store');
     Route::delete('courses/{course}/announcements/{announcement}', [Tutor\AnnouncementController::class, 'destroy'])->name('announcements.destroy');
+
+    // Challenges (Mini Games)
+    Route::get('courses/{course}/challenges', [Tutor\ChallengeController::class, 'index'])->name('challenges.index');
+    Route::get('courses/{course}/challenges/create', [Tutor\ChallengeController::class, 'create'])->name('challenges.create');
+    Route::post('courses/{course}/challenges', [Tutor\ChallengeController::class, 'store'])->name('challenges.store');
+    Route::get('courses/{course}/challenges/{challenge}/edit', [Tutor\ChallengeController::class, 'edit'])->name('challenges.edit');
+    Route::put('courses/{course}/challenges/{challenge}', [Tutor\ChallengeController::class, 'update'])->name('challenges.update');
+    Route::delete('courses/{course}/challenges/{challenge}', [Tutor\ChallengeController::class, 'destroy'])->name('challenges.destroy');
 });
 
 // Xendit Webhook (no auth — CSRF excluded in bootstrap/app.php)

@@ -22,7 +22,8 @@ class Course extends Model
     public function announcements() { return $this->hasMany(Announcement::class); }
     public function forumThreads() { return $this->hasMany(ForumThread::class); }
     public function certificates() { return $this->hasMany(Certificate::class); }
-    public function reviews() { return $this->hasMany(CourseReview::class); }
+    public function reviews()    { return $this->hasMany(CourseReview::class); }
+    public function challenges() { return $this->hasMany(\App\Models\Challenge::class); }
 
     public function getAverageRatingAttribute()
     {

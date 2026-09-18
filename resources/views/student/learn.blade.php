@@ -166,6 +166,28 @@
                 @endforeach
             </div>
         </div>
+
+        {{-- Course Challenges / Mini Games --}}
+        @php $courseChallenges = $course->challenges()->where('is_active', true)->withCount('levels')->get(); @endphp
+        @if($courseChallenges->count() > 0)
+        <div class="card mt-3">
+            <div class="card-header fw-semibold py-2 px-3" style="font-size:14px;">
+                <i class="bi bi-controller me-2 text-primary"></i>Mini Games
+            </div>
+            <div class="list-group list-group-flush">
+                @foreach($courseChallenges as $ch)
+                <a href="{{ route('student.games.show', $ch) }}" class="list-group-item list-group-item-action d-flex align-items-center gap-2 py-2 px-3">
+                    <span style="font-size:1.1rem;">{{ $ch->icon }}</span>
+                    <div class="flex-grow-1">
+                        <div style="font-size:13px;" class="fw-semibold">{{ $ch->title }}</div>
+                        <div class="text-muted" style="font-size:11px;">{{ $ch->levels_count }} level · {{ $ch->points_per_level * $ch->levels_count }} poin</div>
+                    </div>
+                    <i class="bi bi-play-circle text-primary"></i>
+                </a>
+                @endforeach
+            </div>
+        </div>
+        @endif
     </div>
 </div>
 @endsection
