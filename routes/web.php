@@ -107,6 +107,7 @@ Route::prefix('tutor')->name('tutor.')->middleware(['auth', 'role:tutor'])->grou
     Route::delete('courses/{course}/announcements/{announcement}', [Tutor\AnnouncementController::class, 'destroy'])->name('announcements.destroy');
 
     // Challenges (Mini Games)
+    Route::get('challenges', [Tutor\ChallengeController::class, 'dashboard'])->name('challenges.dashboard');
     Route::get('courses/{course}/challenges', [Tutor\ChallengeController::class, 'index'])->name('challenges.index');
     Route::get('courses/{course}/challenges/create', [Tutor\ChallengeController::class, 'create'])->name('challenges.create');
     Route::post('courses/{course}/challenges', [Tutor\ChallengeController::class, 'store'])->name('challenges.store');

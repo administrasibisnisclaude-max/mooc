@@ -30,7 +30,7 @@
         <a href="{{ route('tutor.courses.index') }}" class="{{ request()->routeIs('tutor.courses.*') ? 'active' : '' }}"><i class="bi bi-book"></i> Kursus Saya</a>
         <div class="sidebar-section">Konten</div>
         <a href="{{ route('tutor.courses.create') }}"><i class="bi bi-plus-circle"></i> Buat Kursus Baru</a>
-        <a href="{{ route('tutor.courses.index') }}" class="{{ request()->routeIs('tutor.challenges.*') ? 'active' : '' }}"><i class="bi bi-controller"></i> Mini Games / Challenges</a>
+        <a href="{{ route('tutor.challenges.dashboard') }}" class="{{ request()->routeIs('tutor.challenges.*') ? 'active' : '' }}"><i class="bi bi-controller"></i> Mini Games / Challenges</a>
         <div class="sidebar-section">Akun</div>
         <a href="{{ route('home') }}"><i class="bi bi-house"></i> Halaman Utama</a>
         <form action="{{ route('logout') }}" method="POST">

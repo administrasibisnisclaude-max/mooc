@@ -12,6 +12,23 @@ use Illuminate\Support\Facades\DB;
 
 class ChallengeController extends Controller
 {
+    public function dashboard()
+    {
+        $courses = Course::where('tutor_id', Auth::id())
+            ->whereIn('status', ['published', 'draft'])
+            ->withCount(['challenges', 'challenges as active_challenges_count' => fn($q) => $q->where('is_active', true)])
+            ->get();
+
+        $challenges = Challenge::where('tutor_id', Auth::id())
+            ->withCount('levels')
+            ->withCount('attempts')
+            ->with('course:id,title')
+            ->latest()
+            ->get();
+
+        return view('tutor.challenges.dashboard', compact('courses', 'challenges'));
+    }
+
     public function index(Course $course)
     {
         abort_if($course->tutor_id !== Auth::id(), 403);
