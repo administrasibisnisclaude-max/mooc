@@ -12,11 +12,20 @@ class ReportController extends Controller
 {
     public function index()
     {
-        $monthlyEnrollments = Enrollment::selectRaw('MONTH(created_at) as month, YEAR(created_at) as year, COUNT(*) as count')
-            ->whereYear('created_at', date('Y'))
-            ->groupBy('year', 'month')
-            ->orderBy('month')
-            ->get();
+        $driver = config('database.default');
+        if ($driver === 'sqlite') {
+            $monthlyEnrollments = Enrollment::selectRaw("CAST(strftime('%m', created_at) AS INTEGER) as month, CAST(strftime('%Y', created_at) AS INTEGER) as year, COUNT(*) as count")
+                ->whereRaw("strftime('%Y', created_at) = cast(? as text)", [date('Y')])
+                ->groupBy('year', 'month')
+                ->orderBy('month')
+                ->get();
+        } else {
+            $monthlyEnrollments = Enrollment::selectRaw('MONTH(created_at) as month, YEAR(created_at) as year, COUNT(*) as count')
+                ->whereYear('created_at', date('Y'))
+                ->groupBy('year', 'month')
+                ->orderBy('month')
+                ->get();
+        }
 
         $topCourses = Course::withCount('enrollments')
             ->where('status', 'published')
