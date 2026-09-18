@@ -113,6 +113,9 @@ Route::prefix('tutor')->name('tutor.')->middleware(['auth', 'role:tutor'])->grou
     Route::get('courses/{course}/challenges/{challenge}/edit', [Tutor\ChallengeController::class, 'edit'])->name('challenges.edit');
     Route::put('courses/{course}/challenges/{challenge}', [Tutor\ChallengeController::class, 'update'])->name('challenges.update');
     Route::delete('courses/{course}/challenges/{challenge}', [Tutor\ChallengeController::class, 'destroy'])->name('challenges.destroy');
+    // Challenge Levels
+    Route::post('courses/{course}/challenges/{challenge}/levels', [Tutor\ChallengeController::class, 'storeLevel'])->name('challenges.levels.store');
+    Route::delete('courses/{course}/challenges/{challenge}/levels/{level}', [Tutor\ChallengeController::class, 'destroyLevel'])->name('challenges.levels.destroy');
 });
 
 // Xendit Webhook (no auth — CSRF excluded in bootstrap/app.php)
